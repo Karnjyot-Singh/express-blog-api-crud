@@ -2,9 +2,9 @@ import posts from "../data.js";
 
 function index(req, res) {
     const filterTag = req.query.tags;
-    let postDaMostrare =  posts;
-    if (filterTag!==undefined){
-        postDaMostrare = posts.filter((curElem, i)=>(posts[i].tags.includes(filterTag)));
+    let postDaMostrare = posts;
+    if (filterTag !== undefined) {
+        postDaMostrare = posts.filter((curElem, i) => (posts[i].tags.includes(filterTag)));
     }
     const bacheca = {
         posts: postDaMostrare,
@@ -32,12 +32,38 @@ function show(req, res) {
 
 
 function store(req, res) {
-    res.json("Hai creato un nuovo elemento")
+    let newPost = req.body;
+    newPost = {
+        id: posts[posts.length - 1].id + 1,
+        ...newPost
+    };
+    posts.push(newPost)
+
 };
 
 
 function update(req, res) {
-    res.json("Hai modificato interamente un elemento")
+    let postUpdated = req.body;
+    const postId = parseInt(req.params.id);
+    postUpdated = {
+        id: postId,
+        ...postUpdated
+    };
+    let flag = false;
+    for (let i = 0; i < posts.length; i++) {
+   
+        if (posts[i].id === postId) {
+            posts[i]=postUpdated;
+  
+            flag = true
+        }
+    }
+
+    if (flag === false) {
+        res.sendStatus(404);
+    } else {
+        res.json(postUpdated);
+    }
 };
 
 
